@@ -19,11 +19,12 @@ firebaseConfig = {
   "appId": "1:653591106935:web:5f88b914822571aa6e7d72",
 
   "measurementId": "G-C89LKJP4T7",
-  "databaseURL" : ""
+  "databaseURL" : "https://login-b428a-default-rtdb.firebaseio.com/"
 }
 
 firebase = pyrebase.initialize_app(firebaseConfig)
 auth=firebase.auth()
+db = firebase.database()
 
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -37,7 +38,14 @@ def signin():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+  email=request.form['email']
+  password=request.form['password']
+  username=request.form['username']
+  full_name=request.form['full_name']
+  bio=request.form["bio"]
   if request.method == 'GET':
+    dict_user=db.child("Users").child(login_session['user']['localId']).set(dict_user)
+    dict_user = {'email':'email','password':'password','full_name':'full_name','bio':'bio'}
     return render_template("signup.html")
   else:
     login_session['email'] = request.form['email']
@@ -71,7 +79,16 @@ def signup():
 
 @app.route('/add_tweet', methods=['GET', 'POST'])
 def add_tweet():
+  # create a dictionary called 'tweet' that has 3 key: 
+  # title and text, the values are the inputs from the form
+  # uid: the value is the localId from the login_session
+  # add "Tweets" child to database and push the new tweet (the new dictionary)
+####### all of this can be found in the slides ###########
     return render_template("add_tweet.html")
+
+
+#create a new route called all_tweets and an html page called "tweets.html"
+# display the tweets with the child "Tweets" and with .get().val()
 
 
 if __name__ == '__main__':
