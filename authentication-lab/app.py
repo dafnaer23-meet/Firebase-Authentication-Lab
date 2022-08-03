@@ -81,11 +81,17 @@ def signup():
 def add_tweet():
   # create a dictionary called 'tweet' that has 3 key: 
   # title and text, the values are the inputs from the form
+  tweet={"title":request.form["title"], "text":request.form["text"], "uid":login_session["user"]["localId"]}
   # uid: the value is the localId from the login_session
   # add "Tweets" child to database and push the new tweet (the new dictionary)
+  db.child("tweets").push("tweet")
 ####### all of this can be found in the slides ###########
-    return render_template("add_tweet.html")
+  return render_template("add_tweet.html")
 
+
+@app.route('/all_tweets', methods=['GET', 'POST'])
+def the_tweet():
+  tweets = db.child("tweet").get().val()
 
 #create a new route called all_tweets and an html page called "tweets.html"
 # display the tweets with the child "Tweets" and with .get().val()
